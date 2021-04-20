@@ -27,4 +27,11 @@ public class MultiWayTrie {
     public MultiWayTrie getRightSibling() {
         return _rightSibling;
     }
+
+    //
+    // Get first child
+    //
+    public MultiWayTrie getFirstChild() {
+        return _firstChild;
+    }
 }
