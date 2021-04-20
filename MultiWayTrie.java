@@ -34,4 +34,11 @@ public class MultiWayTrie {
     public MultiWayTrie getFirstChild() {
         return _firstChild;
     }
+
+    //
+    // Get parent
+    //
+    public MultiWayTrie getParent() {
+        return _parent;
+    }
 }
