@@ -1,9 +1,13 @@
+import java.util.ArrayList;
+import java.util.List;
+
 //
 // Multi way trie
 //
 public class MultiWayTrie {
     // Private fields
-    private static int      lastPhraseIndex = 0;
+    private static  List<Integer> trieCounts = new ArrayList<Integer>();
+    private int             _trieIndex;
     private MultiWayTrie    _parent;
     private MultiWayTrie    _rightSibling;
     private MultiWayTrie    _firstChild;
@@ -11,15 +15,32 @@ public class MultiWayTrie {
     private int             _phraseIndex;
 
     //
-    // Create new MultiWayTrie
+    // Create new MultiWayTrie that is the root
     //
     public MultiWayTrie() {
+        _trieIndex = trieCounts.size();
+        trieCounts.add(0);
+
         // Initialize multi way trie to have null phrase
         _parent             = null;
         _rightSibling       = null;
         _firstChild         = null;
         _mismatchedValue    = null;
         _phraseIndex        = 0;
+    }
+    //
+    // Create new MultiWayTrie that is not  the root
+    //
+    private MultiWayTrie(MultiWayTrie parent, Byte mismatchedValue) {
+        _trieIndex = parent._trieIndex;
+        trieCounts.set(_trieIndex, trieCounts.get(_trieIndex)+1); // Increment trie count
+
+        // Initialize multi way trie to have non null phrase
+        _parent             = parent;
+        _rightSibling       = null;
+        _firstChild         = null;
+        _mismatchedValue    = mismatchedValue;
+        _phraseIndex        = trieCounts.get(_trieIndex);
     }
 
     //
@@ -59,21 +80,7 @@ public class MultiWayTrie {
         }
 
         // Insert value after all other child nodes
-        currentChild = newNonRootMultiWayTrie(value, lastPhraseIndex+1);
-        lastPhraseIndex += 1;
-
+        currentChild = new MultiWayTrie(this, value);
         return null; // Returning null indicates value was inserted
-    }
-
-    //
-    // Create a new multiway trie that is not a root node
-    //
-    private MultiWayTrie newNonRootMultiWayTrie(byte mismatchedValue, int phraseIndex) {
-        MultiWayTrie t = new MultiWayTrie();
-        // Set node properties
-        t._mismatchedValue = mismatchedValue;
-        t._phraseIndex = phraseIndex;
-        return t;
-
     }
 }
