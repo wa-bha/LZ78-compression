@@ -7,12 +7,16 @@ public class LZencode {
 
     public static void start () {
         //Reader reads 
-        try (Reader reader = new InputStreamReader(System.in)) {
-            int b = reader.read();
+        
+        int charNum = 1;
 
-            while (b != -1) {
-                System.out.println(b);
-                b = reader.read();
+        try (Reader reader = new InputStreamReader(System.in)) {
+            char b = (char)reader.read();
+
+            while (b != (char)-1) {
+                System.out.println(charNum + ": " + b);
+                b = (char)reader.read();
+                charNum++;
             }
             
         } catch (Exception e){
