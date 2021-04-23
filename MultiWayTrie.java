@@ -44,6 +44,20 @@ public class MultiWayTrie {
     }
 
     //
+    // Get mismatched value
+    //
+    public Byte getMismatchedValue() {
+        return _mismatchedValue;
+    }
+
+    //
+    // Get parentPhraseIndex
+    //
+    public int getParentPhraseIndex() {
+        return _parent._phraseIndex;
+    }
+
+    //
     // Get right sibling
     //
     public MultiWayTrie getRightSibling() {
