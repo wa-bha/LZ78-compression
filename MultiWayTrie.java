@@ -11,7 +11,7 @@ public class MultiWayTrie {
     private MultiWayTrie    _parent;
     private MultiWayTrie    _rightSibling;
     private MultiWayTrie    _firstChild;
-    private Byte            _mismatchedValue;
+    private char            _mismatchedValue;
     private int             _phraseIndex;
 
     //
@@ -25,13 +25,13 @@ public class MultiWayTrie {
         _parent             = null;
         _rightSibling       = null;
         _firstChild         = null;
-        _mismatchedValue    = null;
+        _mismatchedValue    = 0;
         _phraseIndex        = 0;
     }
     //
     // Create new MultiWayTrie that is not  the root
     //
-    private MultiWayTrie(MultiWayTrie parent, Byte mismatchedValue) {
+    private MultiWayTrie(MultiWayTrie parent, char mismatchedValue) {
         _trieIndex = parent._trieIndex;
         trieCounts.set(_trieIndex, trieCounts.get(_trieIndex)+1); // Increment trie count
 
@@ -46,7 +46,7 @@ public class MultiWayTrie {
     //
     // Get mismatched value
     //
-    public Byte getMismatchedValue() {
+    public char getMismatchedValue() {
         return _mismatchedValue;
     }
 
@@ -81,12 +81,12 @@ public class MultiWayTrie {
     //
     // Insert a new value or return the node that is equal to the value
     //
-    public MultiWayTrie insert(Byte value) {
+    public MultiWayTrie insert(char value) {
         MultiWayTrie currentChild = _firstChild;
         
         // Iterate through this node's children
         while (currentChild != null) {
-            if (Byte.compare(currentChild._mismatchedValue, value) == 0) { // If value is already in phrase, return node
+            if (currentChild._mismatchedValue == value) { // If value is already in phrase, return node
                 moveToFront(currentChild);
                 return currentChild;
             }
