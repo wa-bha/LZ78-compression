@@ -73,7 +73,7 @@ public class MultiWayTrie {
         // Iterate through this node's children
         while (currentChild != null) {
             if (Byte.compare(currentChild._mismatchedValue, value) == 0) { // If value is already in phrase, return node
-                // TODO: Move currentChild to front of linked list in order to eventually have somewhat 'ordered by frequency' linekd list
+                moveToFront(currentChild);
                 return currentChild;
             }
             currentChild = currentChild._rightSibling;
@@ -81,6 +81,25 @@ public class MultiWayTrie {
 
         // Insert value after all other child nodes
         currentChild = new MultiWayTrie(this, value);
+        moveToFront(currentChild);
         return null; // Returning null indicates value was inserted
+    }
+
+    //
+    // Move multi way trie to front of all other siblings
+    //
+    private void moveToFront(MultiWayTrie node) {
+        MultiWayTrie parent = node._parent;
+        MultiWayTrie originalFirstChild = parent._firstChild;
+        MultiWayTrie current = originalFirstChild;
+        // Find the left sibling of 'node'
+        while (current._rightSibling != node) {
+            current = current._rightSibling;
+        }
+        // Set left sibling of 'node' to null
+        current._rightSibling = null;
+        // Now move 'node' to start of all siblings
+        parent._firstChild = node;
+        node._rightSibling = originalFirstChild;
     }
 }
