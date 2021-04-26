@@ -86,8 +86,11 @@ public class MultiWayTrie {
         
         // Iterate through this node's children
         while (currentChild != null) {
+            System.out.println("currentChildVal: " + currentChild._mismatchedValue + "\tvalueTryingToInsert: " + value
+            + "\tComparison" + (currentChild._mismatchedValue == value));
+
             if (currentChild._mismatchedValue == value) { // If value is already in phrase, return node
-                moveToFront(currentChild);
+                // moveToFront(currentChild);
                 return currentChild;
             }
             currentChild = currentChild._rightSibling;
@@ -95,7 +98,10 @@ public class MultiWayTrie {
 
         // Insert value after all other child nodes
         currentChild = new MultiWayTrie(this, value);
-        moveToFront(currentChild);
+        if (_firstChild == null) {
+            _firstChild = currentChild;
+        }
+        // moveToFront(currentChild);
         return null; // Returning null indicates value was inserted
     }
 
