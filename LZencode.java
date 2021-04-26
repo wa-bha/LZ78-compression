@@ -6,10 +6,8 @@ public class LZencode {
     }
 
     public static void start () {
-
         // try (Reader reader = new InputStreamReader(System.in)) {
-        try (Reader reader = new FileReader("./test.txt")) {
-            
+        try (Reader reader = new InputStreamReader(System.in)) {
             BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(System.out));
 
             MultiWayTrie trie = new MultiWayTrie();
@@ -32,6 +30,7 @@ public class LZencode {
                 }
 
                 //Print tuple (parentPhraseIndex, Mismathced Value) to stdout
+
                 System.err.println(parentIndex + ", " + b);
                 writer.write(parentIndex + " " + b + "\n");
 
