@@ -7,8 +7,8 @@ public class LZencode {
 
     public static void start () {
 
-        // try (Reader reader = new InputStreamReader(System.in)) {
-        try (Reader reader = new FileReader("./MobyDick.txt")) {
+        try (Reader reader = new InputStreamReader(System.in)) {
+        // try (Reader reader = new FileReader("./MobyDick.txt")) {
             MultiWayTrie trie = new MultiWayTrie();
 
             //Read the first character and store in local variable
