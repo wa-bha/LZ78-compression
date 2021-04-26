@@ -87,9 +87,6 @@ public class MultiWayTrie {
         
         // Iterate through this node's children
         while (currentChild != null) {
-            System.err.println("currentChildVal: " + currentChild._mismatchedValue + "\tvalueTryingToInsert: " + value
-            + "\tComparison" + (currentChild._mismatchedValue == value));
-
             if (currentChild._mismatchedValue == value) { // If value is already in phrase, return node
                 // moveToFront(currentChild);
                 return currentChild;
