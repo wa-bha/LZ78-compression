@@ -54,7 +54,7 @@ public class MultiWayTrie {
     // Get parentPhraseIndex
     //
     public int getParentPhraseIndex() {
-        return _parent._phraseIndex;
+        return _phraseIndex;
     }
 
     //
@@ -83,16 +83,18 @@ public class MultiWayTrie {
     //
     public MultiWayTrie insert(char value) {
         MultiWayTrie currentChild = _firstChild;
+        MultiWayTrie prevChild = currentChild;
         
         // Iterate through this node's children
         while (currentChild != null) {
-            System.out.println("currentChildVal: " + currentChild._mismatchedValue + "\tvalueTryingToInsert: " + value
+            System.err.println("currentChildVal: " + currentChild._mismatchedValue + "\tvalueTryingToInsert: " + value
             + "\tComparison" + (currentChild._mismatchedValue == value));
 
             if (currentChild._mismatchedValue == value) { // If value is already in phrase, return node
                 // moveToFront(currentChild);
                 return currentChild;
             }
+            prevChild = currentChild;
             currentChild = currentChild._rightSibling;
         }
 
@@ -100,6 +102,8 @@ public class MultiWayTrie {
         currentChild = new MultiWayTrie(this, value);
         if (_firstChild == null) {
             _firstChild = currentChild;
+        } else {
+            prevChild._rightSibling = currentChild;
         }
         // moveToFront(currentChild);
         return null; // Returning null indicates value was inserted

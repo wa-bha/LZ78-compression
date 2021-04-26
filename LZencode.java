@@ -7,8 +7,8 @@ public class LZencode {
 
     public static void start () {
 
-        // try (Reader reader = new InputStreamReader(System.in)) {
-        try (Reader reader = new FileReader("./test.txt")) {
+        try (Reader reader = new InputStreamReader(System.in)) {
+        // try (Reader reader = new FileReader("./MobyDick.txt")) {
             MultiWayTrie trie = new MultiWayTrie();
 
             //Read the first character and store in local variable
@@ -29,7 +29,7 @@ public class LZencode {
                 }
 
                 //Print tuple (parentPhraseIndex, Mismathced Value) to stdout
-                System.out.println(parentIndex + ", " + b);
+                System.out.println(parentIndex + " " + (int)b);
 
                 b = (char)reader.read();
             }
