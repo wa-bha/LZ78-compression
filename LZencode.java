@@ -6,9 +6,10 @@ public class LZencode {
     }
 
     public static void start () {
-
+        // try (Reader reader = new InputStreamReader(System.in)) {
         try (Reader reader = new InputStreamReader(System.in)) {
-        // try (Reader reader = new FileReader("./MobyDick.txt")) {
+            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(System.out));
+
             MultiWayTrie trie = new MultiWayTrie();
 
             //Read the first character and store in local variable
@@ -29,10 +30,17 @@ public class LZencode {
                 }
 
                 //Print tuple (parentPhraseIndex, Mismathced Value) to stdout
-                System.out.println(parentIndex + " " + (int)b);
+
+                System.err.println(parentIndex + ", " + b);
+                writer.write(parentIndex + " " + b + "\n");
 
                 b = (char)reader.read();
             }
+
+            //Once there are no more characters to encode
+            writer.flush();
+            writer.close();
+            reader.close();
             
         } catch (Exception e){
             System.out.println("Invalid piped in file");
