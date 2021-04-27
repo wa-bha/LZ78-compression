@@ -31,7 +31,6 @@ public class LZdecode {
                 // Build output stack
                 List<Integer> outStack = new ArrayList<Integer>();
                 while (parentPhraseIndex != 0) {
-                    System.err.println("val " + misMatchedValue + ", index " + parentPhraseIndex);
                     outStack.add(misMatchedValue);
                     misMatchedValue = dictionary.get(parentPhraseIndex-1)[1];
                     parentPhraseIndex = dictionary.get(parentPhraseIndex-1)[0];
@@ -41,7 +40,9 @@ public class LZdecode {
 
                 // Write output stack to stdout
                 for (int i = outStack.size()-1; i >= 0; i--) {
-                    writer.write(outStack.get(i));
+                    if (outStack.get(i) != 65535) {
+                        writer.write(outStack.get(i));
+                    }
                 }
 
                 l = reader.readLine(); // Read next line
