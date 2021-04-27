@@ -13,9 +13,9 @@ public class LZpack {
         // try (BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {
             PrintStream writer = new PrintStream(System.out);
             
-            int buffer = 0;
+            int buffer = 0b0;
             int bufferIndex = BUFFER_NUM_BITS;
-            int phraseNum = 0;
+            int phraseNum = 1;
 
             // Read the first character and store in local variable
             String l = reader.readLine();
@@ -39,11 +39,21 @@ public class LZpack {
                 int minBits = (int)Math.ceil(Math.log(phraseNum) / Math.log(2));
                 
                 // Pack phrase
-                parentPhraseIndex = parentPhraseIndex << BUFFER_NUM_BITS - bufferIndex - minBits; // Shift left
+                parentPhraseIndex = parentPhraseIndex << BUFFER_NUM_BITS - bufferIndex; // Shift left
+
+                int mask = (int)Math.pow(2, BUFFER_NUM_BITS-(BUFFER_NUM_BITS-bufferIndex))-1;
+                mask = mask ^ (-1); // Flip bits
+                buffer = buffer & mask; // Apply mask
+
                 buffer = buffer | parentPhraseIndex; // Append parent phrase index to buffer
                 bufferIndex -= minBits; // Update buffer index
                 // Shift left
-                mismatchedValue = mismatchedValue << BUFFER_NUM_BITS - bufferIndex - BYTE_NUM_BITS;
+                mismatchedValue = mismatchedValue << BUFFER_NUM_BITS - bufferIndex;
+
+                mask = (int)Math.pow(2, BUFFER_NUM_BITS-(BUFFER_NUM_BITS-bufferIndex))-1;
+                mask = mask ^ (-1); // Flip bits
+                buffer = buffer & mask; // Apply mask
+
                 buffer = buffer | mismatchedValue; // Append mismatched value to buffer
                 bufferIndex -= BYTE_NUM_BITS; // Update buffer index
                 
