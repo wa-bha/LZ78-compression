@@ -14,7 +14,7 @@ public class LZpack {
             PrintStream writer = new PrintStream(System.out);
             
             int buffer = 0b0;
-            int bufferIndex = BUFFER_NUM_BITS;
+            int bufferIndex = 0;
             int phraseNum = 1;
 
             // Read the first character and store in local variable
@@ -22,60 +22,57 @@ public class LZpack {
             String[] tuple = l.split(" ");
             int parentPhraseIndex = Integer.parseInt(tuple[0]);
             int mismatchedValue = Integer.parseInt(tuple[1]);
-            // Shift left
-            // mismatchedValue = mismatchedValue << BUFFER_NUM_BITS - bufferIndex - BYTE_NUM_BITS;
-            // buffer = buffer | mismatchedValue; // Append mismatched value to buffer
-            // bufferIndex += BYTE_NUM_BITS; // Update buffer index
+
+            // Convert to uint
+            // parentPhraseIndex = getUInt(parentPhraseIndex);
+            // mismatchedValue = getUInt(mismatchedValue);
 
             writer.write(mismatchedValue);
-            phraseNum++;
             l = reader.readLine(); // Read next line
             // While we have no finished reading the inputted file
             while (l != null) {
+                phraseNum++;
                 // Get phrase details
                 tuple = l.split(" ");
                 parentPhraseIndex = Integer.parseInt(tuple[0]);
                 mismatchedValue = Integer.parseInt(tuple[1]);
+
+                // Convert to uint
+                // parentPhraseIndex = getUInt(parentPhraseIndex);
+                // mismatchedValue = getUInt(mismatchedValue);
+
                 int minBits = (int)Math.ceil(Math.log(phraseNum) / Math.log(2));
                 
-                // Pack phrase
-                parentPhraseIndex = parentPhraseIndex << BUFFER_NUM_BITS - bufferIndex; // Shift left
-
-                int mask = (int)Math.pow(2, BUFFER_NUM_BITS-(BUFFER_NUM_BITS-bufferIndex))-1;
-                mask = mask ^ (-1); // Flip bits
-                buffer = buffer & mask; // Apply mask
-
+                // Pack phrase number
+                parentPhraseIndex = parentPhraseIndex << (BUFFER_NUM_BITS - (BUFFER_NUM_BITS - bufferIndex)); // Shift into position
+                buffer = maskBuffer(buffer, bufferIndex);
                 buffer = buffer | parentPhraseIndex; // Append parent phrase index to buffer
-                bufferIndex -= minBits; // Update buffer index
-                // Shift left
-                mismatchedValue = mismatchedValue << BUFFER_NUM_BITS - bufferIndex;
+                bufferIndex += minBits; // Update buffer index
 
-                mask = (int)Math.pow(2, BUFFER_NUM_BITS-(BUFFER_NUM_BITS-bufferIndex))-1;
-                mask = mask ^ (-1); // Flip bits
-                buffer = buffer & mask; // Apply mask
-
+                // Pack mismatched value
+                mismatchedValue = mismatchedValue << (BUFFER_NUM_BITS - (BUFFER_NUM_BITS - bufferIndex)); // Shift into position 
+                buffer = maskBuffer(buffer, bufferIndex);
                 buffer = buffer | mismatchedValue; // Append mismatched value to buffer
-                bufferIndex -= BYTE_NUM_BITS; // Update buffer index
+                bufferIndex += BYTE_NUM_BITS; // Update buffer index
                 
                 // Output two bytes if buffer is full enough i.e. 
-                if (bufferIndex < BYTE_NUM_BITS) {
+                if (bufferIndex > (BUFFER_NUM_BITS - BYTE_NUM_BITS)) {
                     for (int i = 1; i <= (BUFFER_NUM_BITS/BYTE_NUM_BITS)/2; i ++) {
                         // Get output bytes from buffer
-                        int b = (buffer >> BYTE_NUM_BITS*3);
+                        int b = (buffer >> (BYTE_NUM_BITS*3));
                         // Output them to stdout
                         writer.write(b);
                         // Shift buffer along left to make space to load in more values
                         buffer = buffer << BYTE_NUM_BITS;
+                        bufferIndex -= BYTE_NUM_BITS;
                     }
-                    bufferIndex = BUFFER_NUM_BITS/2;
                 }
                 l = reader.readLine(); // Read next line
-                phraseNum++;
             }
             // Output rest of tuples remaining in buffer
             for (int i = 1; i <= BUFFER_NUM_BITS/BYTE_NUM_BITS; i ++) {
                 // Get output bytes from buffer
-                int b = (buffer >> BYTE_NUM_BITS*3);
+                int b = (buffer >> (BYTE_NUM_BITS*3));
                 // Output them to stdout
                 writer.write(b);
                 // Shift buffer along left to make space to load in more values
@@ -92,6 +89,19 @@ public class LZpack {
             e.printStackTrace();
         }
     }
+
+    private static int getUInt(int twosComp) {
+        int uint = twosComp - 1;
+        uint = uint ^ (-1);
+        return uint;
+    }
+
+    private static int maskBuffer(int buffer, int bufferIndex) {
+        int mask = (int)Math.pow(2, bufferIndex)-1;
+        mask = mask ^ (-1); // Flip bits
+        return buffer & mask; // Apply mask
+    }
+
     // Pseudocode:
 
     // - Declare our byte buffer e.g. an int (default int can hold 4 bytes)
