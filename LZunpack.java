@@ -6,7 +6,22 @@ public class LZunpack {
     }
 
     public static void start () {
+        try {
+            BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        
+            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(System.out));
 
+            
+
+            // Once standard input has been exhausted
+            writer.flush();
+            writer.close();
+            reader.close();
+            
+        } catch (Exception e){
+            System.out.println("Invalid piped in file");
+            e.printStackTrace();
+        }
     }
 }
 
