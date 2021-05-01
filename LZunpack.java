@@ -17,30 +17,24 @@ public class LZunpack {
             int bufferIndex = 0;
             int readerIndex = 0;
 
+            int nextBit;
             int phraseNumber;
             int mismatchedValue;
             
             //For the first case, read ONLY the first 8 bits, print 0 + "8-bit phraseNumber"
             for (int j = 0; j < 8; j++) {
-                reader.read();
-                
-                //THIS PROCESS
-
+                nextBit = reader.read();
+                mismatchedValue = mismatchedValue & nextBit;
+                mismatchedValue = mismatchedValue <<< 1;
             }
-            writer.write("0 " + mismatchedValue)
+            writeTuple(0, mismatchedValue);
 
-            //while we are not at the end of byte stream
+            nextBit = reader.read();
+
+
                 //Fill buffer with bytes
-
                 //while 
-
                 //Calculate how many bits need: second one will be 9
-                //
-
-
-
-
-
             //Read in a stream of bytes
 
             // Once standard input has been exhausted
@@ -52,6 +46,11 @@ public class LZunpack {
             System.out.println("Invalid piped in file");
             e.printStackTrace();
         }
+    }
+
+    //Writes tuple in correct format to the output stream
+    public void writeTuple(int phraseNumber, int mismatchedValue) {
+        writer.write(phraseNumber + " " + mismatchedValue + "\n")
     }
 }
 
