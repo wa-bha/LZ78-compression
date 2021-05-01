@@ -13,29 +13,48 @@ public class LZunpack {
             BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
             BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(System.out));
 
-            int buffer = 0;
-            int bufferIndex = 0;
-            int readerIndex = 0;
+            int currentPhraseIndex = 0;
 
             int nextBit;
-            int phraseNumber;
+            int parentPhraseNumber;
             int mismatchedValue;
             
-            //For the first case, read ONLY the first 8 bits, print 0 + "8-bit phraseNumber"
+            //For the FIRST CASE, read ONLY the first 8 bits, print 0 + "8-bit phraseNumber"
             for (int j = 0; j < 8; j++) {
                 nextBit = reader.read();
                 mismatchedValue = mismatchedValue & nextBit;
                 mismatchedValue = mismatchedValue <<< 1;
             }
             writeTuple(0, mismatchedValue);
+            currentPhraseIndex++;
 
             nextBit = reader.read();
 
+            //While we have not finished reading
+            while (nextBit != null) {
 
-                //Fill buffer with bytes
-                //while 
-                //Calculate how many bits need: second one will be 9
-            //Read in a stream of bytes
+                //Get next tuple and store in local variable
+                int phraseNumLength = (int)Math.ceil(Math.log(currentPhraseIndex) / Math.log(2));
+
+                //RETRIEVE parentPhraseNumber
+                for (int i = 0; i < phraseNumLength; i++) {
+                    nextBit = reader.read();
+                    parentPhraseNumber = parentPhraseNumber & nextBit;
+                    parentPhraseNumber = parentPhraseNumber <<< 1;
+                }
+
+                //RETRIEVE mismatchedValue
+                for (int j = 0; j < 8; j++) {
+                    nextBit = reader.read();
+                    mismatchedValue = mismatchedValue & nextBit;
+                    mismatchedValue = mismatchedValue <<< 1;
+                }
+                
+                //Write next tuple to the writer
+                writeTuple(parentPhraseNumber, mismatchedValue);
+                currentPhraseIndex++;
+                nextBit = reader.read();
+            }
 
             // Once standard input has been exhausted
             writer.flush();
@@ -53,24 +72,3 @@ public class LZunpack {
         writer.write(phraseNumber + " " + mismatchedValue + "\n")
     }
 }
-
-/* 
-    Psuedocode:
-    Declare variables to temporarily store the currentPhraseIndex and currentMismatched value
-    Declare a 32 bit integer buffer to be able to use as a stack 
-        - pop off into variables and print
-        - push onto buffer once there are no more characters
-    Declare an current index location for finding where you are on the buffer
-
-    Retrieve standard output, in the form of a stream of bytes
-    
-    Seperate bytes into parentPhraseIndex and mismatched values (the tuples)
-        - First case is only going to be a byte (8 bits only) - phrase index is implied to be 0
-        After that:
-        - Calculate number of bits required for the phrase index
-        - Use this to seperate into pop off the next individual item in the tuple
-        - Pop off into variables
-
-    Writes the variables in the correct format to standard output (adding " " and nextLines)
-
-*/
