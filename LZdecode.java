@@ -8,10 +8,9 @@ public class LZdecode {
     }
 
     public static void start () {
-        // try (Reader reader = new InputStreamReader(System.in)) {
         // Use BufferedReader to read lines instead of bytes at a time
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {
-            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(System.out));
+            PrintStream writer = new PrintStream(System.out); // Use PrintStream to output only least significant byte of ints
 
             List<int[]> dictionary = new ArrayList<int[]>();
 
@@ -26,7 +25,7 @@ public class LZdecode {
                 int misMatchedValue = Integer.parseInt(tuple[1]);
 
                 // Add to dictionary
-                dictionary.add(new int[]{parentPhraseIndex, misMatchedValue});
+                dictionary.add(new int[] { parentPhraseIndex, misMatchedValue });
 
                 // Build output stack
                 List<Integer> outStack = new ArrayList<Integer>();
@@ -40,7 +39,7 @@ public class LZdecode {
 
                 // Write output stack to stdout
                 for (int i = outStack.size()-1; i >= 0; i--) {
-                    if (outStack.get(i) != 65535) {
+                    if (outStack.get(i) != (byte)65535) {
                         writer.write(outStack.get(i));
                     }
                 }
