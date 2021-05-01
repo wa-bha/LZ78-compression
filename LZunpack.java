@@ -1,6 +1,9 @@
 import java.io.*;
 
 public class LZunpack {
+    public static final int BYTE_NUM_BITS = 8;
+    public static final int BUFFER_NUM_BITS = 32;
+
     public static void main(String[] args) {
         start();
     }
@@ -8,10 +11,37 @@ public class LZunpack {
     public static void start () {
         try {
             BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-        
             BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(System.out));
 
+            int buffer = 0;
+            int bufferIndex = 0;
+            int readerIndex = 0;
+
+            int phraseNumber;
+            int mismatchedValue;
             
+            //For the first case, read ONLY the first 8 bits, print 0 + "8-bit phraseNumber"
+            for (int j = 0; j < 8; j++) {
+                reader.read();
+                
+                //THIS PROCESS
+
+            }
+            writer.write("0 " + mismatchedValue)
+
+            //while we are not at the end of byte stream
+                //Fill buffer with bytes
+
+                //while 
+
+                //Calculate how many bits need: second one will be 9
+                //
+
+
+
+
+
+            //Read in a stream of bytes
 
             // Once standard input has been exhausted
             writer.flush();
