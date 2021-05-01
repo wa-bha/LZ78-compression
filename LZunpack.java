@@ -2,7 +2,7 @@ import java.io.*;
 
 public class LZunpack {
     public static final int BYTE_NUM_BITS = 8;
-    public static final int BUFFER_NUM_BITS = 32;
+    public static final int BUFFER_MAX_BITS = 32;
 
     public static void main(String[] args) {
         start();
@@ -10,22 +10,50 @@ public class LZunpack {
 
     public static void start () {
         try {
+            BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
             BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(System.out));
 
+            //Used for calculating bit size of phrase number
             int currentPhraseIndex = 0;
 
-            int nextByte = 0;
+            
+            int nextInputByte = 0;
             int parentPhraseNumber = 0;
             int mismatchedValue = 0;
+
+            int buffer = 0;
+            int remainingBitsInBuffer = 32;
             
             //For the FIRST CASE, read 8 bits, write 0 + "8-bit mismatched value"
-            nextByte = System.in.read();
-            mismatchedValue = mismatchedValue | nextByte;
+            nextInputByte = System.in.read();
+            System.err.println(nextInputByte);
+            mismatchedValue = mismatchedValue | nextInputByte;
             writeTuple(0, mismatchedValue, writer);
             currentPhraseIndex++;
 
             
-            //nextBit = System.in.read();
+            nextInputByte = System.in.read();
+            System.err.println(nextInputByte);
+            buffer = buffer | nextInputByte;
+            System.err.println(buffer);
+
+            // //While there are still bytes to read
+            // while (nextInputByte != -1) {
+                
+
+            //     nextInputByte = System.in.read();
+
+
+            //     buffer = buffer << 16;
+            //     buffer = buffer | reader.read();
+
+            //     System.err.println(buffer);
+
+            //     // //While we are not at the end of the buffer
+            //     // while (currentPhraseIndex < BUFFER_MAX_BITS) {
+
+            //     // }
+            // }
 
             // //While we have not finished reading
             // while (nextBit != -1) {
