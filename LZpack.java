@@ -80,12 +80,13 @@ public class LZpack {
                 l = reader.readLine(); // Read next line
             }
             // Output rest of tuples remaining in buffer
-            for (int i = 1; i <= 4; i ++) {
+            while (bufferIndex > 0) {
                 // Output them to stdout
                 byte b = (byte)(buffer >>> (BUFFER_NUM_BITS - BYTE_NUM_BITS));
                 writer.write(b); // Write left most byte
                 // Shift buffer along left to make space to load in more values
                 buffer = buffer << BYTE_NUM_BITS;
+                bufferIndex -= BYTE_NUM_BITS;
             }
 
             // Once there are no more characters to encode
