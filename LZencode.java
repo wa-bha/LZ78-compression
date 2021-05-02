@@ -16,13 +16,17 @@ public class LZencode {
             int b = System.in.read();
 
             // While we have no finished reading the inputted file
-            while (b != (byte)-1) {
+            while (b != -1) {
                 MultiWayTrie current = trie.insert(b);
                 int parentIndex = 0;
                 
                 // While insert does not return null, read the next character and insert it into the trie               
                 while (current != null) {
-                    b = System.in.read();
+                    int tmp = System.in.read();
+                    if (tmp == -1) {
+                        break;
+                    }
+                    b = tmp;
                     parentIndex = current.getParentPhraseIndex();
                     current = current.insert(b);
                 }
