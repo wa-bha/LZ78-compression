@@ -8,96 +8,79 @@ public class LZunpack {
         start();
     }
 
+    private static class InputFinished extends Exception {
+        InputFinished() {
+            super();
+        }
+    }
+
+    private static int buffer = 0;
+    private static int index = 0;
+
+    private static int readNextBit() throws IOException, InputFinished {
+        //IF buffer is empty, read a new byte and reset index
+        if (index == 0) {
+            buffer = System.in.read();
+            if( buffer == -1 ) {
+                throw new InputFinished();
+            }
+            //System.err.println( buffer );
+            index = 8;
+        }
+
+        //ELSE we have bits remaining to read in the buffer
+        index--;
+        int bit = (buffer >>> index) & 1;
+        return bit;
+    }
+
     public static void start () {
         try {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
             BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(System.out));
-
             //Used for calculating bit size of phrase number
-            int currentPhraseIndex = 0;
-
+            int currentPhraseIndex = 1;
             
-            int nextInputByte = 0;
-            int parentPhraseNumber = 0;
-            int mismatchedValue = 0;
+            try {
+                //While we have not finished reading
+                while (true) {
+                    int parentPhraseNumber = 0;
+                    int mismatchedValue = 0;
 
-            int buffer = 0;
-            int remainingBitsInBuffer = 32;
-            
-            //For the FIRST CASE, read 8 bits, write 0 + "8-bit mismatched value"
-            nextInputByte = System.in.read();
-            System.err.println(nextInputByte);
-            mismatchedValue = mismatchedValue | nextInputByte;
-            writeTuple(0, mismatchedValue, writer);
-            currentPhraseIndex++;
+                    int phraseNumLength = (int)Math.ceil(Math.log(currentPhraseIndex) / Math.log(2));
 
-            
-            nextInputByte = System.in.read();
-            System.err.println(nextInputByte);
-            buffer = buffer | nextInputByte;
-            System.err.println(buffer);
+                    //RETRIEVE parentPhraseNumber
+                    for (int i = 0; i < phraseNumLength; i++) {
+                        int nextBit = readNextBit();
+                        //System.err.print( nextBit == 0 ? "0" : "1" );
+                        parentPhraseNumber = parentPhraseNumber << 1;
+                        parentPhraseNumber = parentPhraseNumber | nextBit;
+                    }
 
-            // //While there are still bytes to read
-            // while (nextInputByte != -1) {
-                
+                    //RETRIEVE mismatchedValue
+                    for (int j = 0; j < 8; j++) {
+                        int nextBit = readNextBit();
+                        //System.err.print( nextBit == 0 ? "0" : "1" );
+                        mismatchedValue = mismatchedValue << 1;
+                        mismatchedValue = mismatchedValue | nextBit;
+                    }
+                    System.err.println();
 
-            //     nextInputByte = System.in.read();
-
-
-            //     buffer = buffer << 16;
-            //     buffer = buffer | reader.read();
-
-            //     System.err.println(buffer);
-
-            //     // //While we are not at the end of the buffer
-            //     // while (currentPhraseIndex < BUFFER_MAX_BITS) {
-
-            //     // }
-            // }
-
-            // //While we have not finished reading
-            // while (nextBit != -1) {
-
-            //     //Get next tuple and store in local variable
-            //     int phraseNumLength = (int)Math.ceil(Math.log(currentPhraseIndex) / Math.log(2));
-
-            //     //RETRIEVE parentPhraseNumber
-            //     for (int i = 0; i < phraseNumLength; i++) {
-            //         nextBit = System.in.read();
-            //         parentPhraseNumber = parentPhraseNumber & nextBit;
-            //         parentPhraseNumber = parentPhraseNumber << 1;
-            //     }
-
-            //     //RETRIEVE mismatchedValue
-            //     for (int j = 0; j < 8; j++) {
-            //         nextBit = System.in.read();
-            //         mismatchedValue = mismatchedValue & nextBit;
-            //         mismatchedValue = mismatchedValue << 1;
-            //     }
-                
-            //     //Write next tuple to the writer
-            //     writeTuple(parentPhraseNumber, mismatchedValue, writer);
-            //     currentPhraseIndex++;
-            //     nextBit = System.in.read();
-            // }
-
-            // Once standard input has been exhausted
-            writer.flush();
-            writer.close();
-            
-        } catch (Exception e){
-            System.out.println("Invalid piped in file");
-            e.printStackTrace();
+                    //Write next tuple to the writer
+                    writeTuple(parentPhraseNumber, mismatchedValue, writer);
+                    currentPhraseIndex++;
+                }
+            } catch (InputFinished e) {
+                writer.flush();
+                writer.close();
+            }
+        } catch (Exception ex) {
+            System.out.println("Error processing: " + ex.getMessage() );
+            ex.printStackTrace();
         }
     }
 
     //Writes tuple in correct format to the output stream
-    public static void writeTuple(int phraseNumber, int mismatchedValue, BufferedWriter writer) {
-        try {
-            writer.write(phraseNumber + " " + mismatchedValue + "\n");
-        } catch (Exception e){
-            System.out.println("Writer error");
-            e.printStackTrace();
-        }
+    public static void writeTuple(int phraseNumber, int mismatchedValue, BufferedWriter writer) throws IOException {
+        writer.write(phraseNumber + " " + mismatchedValue + "\n");
     }
 }
