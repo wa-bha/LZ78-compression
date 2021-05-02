@@ -3,3 +3,6 @@
 
 # Vs code preference files
 .vscode
+
+# Txt files
+*.txt
