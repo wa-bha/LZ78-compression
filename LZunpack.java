@@ -63,7 +63,7 @@ public class LZunpack {
                         mismatchedValue = mismatchedValue << 1;
                         mismatchedValue = mismatchedValue | nextBit;
                     }
-                    System.err.println();
+                    //System.err.println();
 
                     //Write next tuple to the writer
                     writeTuple(parentPhraseNumber, mismatchedValue, writer);

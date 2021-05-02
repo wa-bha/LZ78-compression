@@ -2,7 +2,7 @@ import java.io.*;
 
 public class LZpack {
     public static final int BYTE_NUM_BITS = 8;
-    public static final int BUFFER_NUM_BITS = 32;
+    public static final int BUFFER_NUM_BITS = 64;
     public static void main(String[] args) {
         start();
     }
@@ -13,41 +13,41 @@ public class LZpack {
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {
             PrintStream writer = new PrintStream(System.out);
             
-            int buffer = 0b0;
+            long buffer = 0b0;
             int bufferIndex = 0;
             int phraseNum = 1;
 
             // Read the first character and store in local variable
             String l = reader.readLine();
             String[] tuple = l.split(" ");
-            int parentPhraseIndex = Integer.parseInt(tuple[0]);
-            int mismatchedValue = Integer.parseInt(tuple[1]);
+            long parentPhraseIndex = Long.parseLong(tuple[0]);
+            long mismatchedValue = Long.parseLong(tuple[1]);
 
-            writer.write(mismatchedValue);
+            writer.write((int)mismatchedValue);
             l = reader.readLine(); // Read next line
             // While we have no finished reading the inputted file
             while (l != null) {
                 phraseNum++;
                 // Get phrase details
                 tuple = l.split(" ");
-                parentPhraseIndex = Integer.parseInt(tuple[0]);
-                mismatchedValue = Integer.parseInt(tuple[1]);
+                parentPhraseIndex = Long.parseLong(tuple[0]);
+                mismatchedValue = Long.parseLong(tuple[1]);
 
                 int minBits = (int)Math.ceil(Math.log(phraseNum) / Math.log(2));
                 
                 // Pack phrase number
-                parentPhraseIndex = parentPhraseIndex << (BUFFER_NUM_BITS - bufferIndex - minBits); // Shift into position
+                parentPhraseIndex = parentPhraseIndex << ((BUFFER_NUM_BITS - bufferIndex) - minBits); // Shift into position
                 buffer = maskBuffer(buffer, bufferIndex);
                 buffer = buffer | parentPhraseIndex; // Append parent phrase index to buffer
                 bufferIndex += minBits; // Update buffer index
 
                 // Pack mismatched value
-                if (mismatchedValue != -1) {
-                    mismatchedValue = mismatchedValue << (BUFFER_NUM_BITS  - bufferIndex - BYTE_NUM_BITS); // Shift into position 
+                // if (mismatchedValue != -1) {
+                    mismatchedValue = mismatchedValue << ((BUFFER_NUM_BITS  - bufferIndex) - BYTE_NUM_BITS); // Shift into position 
                     buffer = maskBuffer(buffer, bufferIndex);
                     buffer = buffer | mismatchedValue; // Append mismatched value to buffer
                     bufferIndex += BYTE_NUM_BITS; // Update buffer index
-                }
+                // }
 
                 // Print statements that were useful for debugging
                 /*
@@ -60,22 +60,20 @@ public class LZpack {
                 */
                 
                 // Output two bytes if buffer is full enough i.e. 
-                if (bufferIndex > (BUFFER_NUM_BITS - BYTE_NUM_BITS) || bufferIndex > (BUFFER_NUM_BITS - minBits)) {
-                    for (int i = 1; i <= 2; i ++) {
-                        // Output them to stdout
-                        byte b = (byte)(buffer >>> (BUFFER_NUM_BITS - BYTE_NUM_BITS));
-                        writer.write(b); // Write left most byte
+                while (bufferIndex > BYTE_NUM_BITS) {
+                    // Output them to stdout
+                    byte b = (byte)(buffer >>> (BUFFER_NUM_BITS - BYTE_NUM_BITS));
+                    writer.write(b); // Write left most byte
 
-                        // Print statements that were useful for debugging
-                        /*
-                        System.err.print("wrote byte:\t");
-                        System.err.println(String.format("%32s", Integer.toBinaryString(buffer)).replace(' ', '0')); // DEBUG PRINT
-                        */
+                    // Print statements that were useful for debugging
+                    /*
+                    System.err.print("wrote byte:\t");
+                    System.err.println(String.format("%32s", Integer.toBinaryString(buffer)).replace(' ', '0')); // DEBUG PRINT
+                    */
 
-                        // Shift buffer along left to make space to load in more values
-                        buffer = buffer << BYTE_NUM_BITS;
-                        bufferIndex -= BYTE_NUM_BITS;
-                    }
+                    // Shift buffer along left to make space to load in more values
+                    buffer = buffer << BYTE_NUM_BITS;
+                    bufferIndex -= BYTE_NUM_BITS;
                 }
                 l = reader.readLine(); // Read next line
             }
@@ -100,8 +98,8 @@ public class LZpack {
         }
     }
 
-    private static int maskBuffer(int buffer, int bufferIndex) {
-        int mask = (int)Math.pow(2, (BUFFER_NUM_BITS - bufferIndex))-1;
+    private static long maskBuffer(long buffer, int bufferIndex) {
+        long mask = (long)Math.pow(2, (BUFFER_NUM_BITS - bufferIndex))-1;
         mask = mask ^ (-1);
         return buffer & mask; // Apply mask
     }
