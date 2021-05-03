@@ -60,7 +60,7 @@ public class LZpack {
                 */
                 
                 // Output two bytes if buffer is full enough i.e. 
-                while (bufferIndex > BYTE_NUM_BITS) {
+                while (bufferIndex >= BYTE_NUM_BITS) {
                     // Output them to stdout
                     byte b = (byte)(buffer >>> (BUFFER_NUM_BITS - BYTE_NUM_BITS));
                     writer.write(b); // Write left most byte
