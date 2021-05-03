@@ -3,7 +3,7 @@ import java.util.List;
 import java.util.ArrayList;
 
 //
-// LZ decode
+// LZ Decode
 //
 public class LZdecode {
     public static void main(String[] args) {

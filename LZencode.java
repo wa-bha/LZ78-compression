@@ -1,7 +1,7 @@
 import java.io.*;
 
 //
-// LZ encode
+// LZ Encode
 //
 public class LZencode {
     public static void main(String[] args) {

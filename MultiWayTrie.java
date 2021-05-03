@@ -2,7 +2,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 //
-// Multi way trie
+// Multi Way Trie
 //
 public class MultiWayTrie {
     // Private fields

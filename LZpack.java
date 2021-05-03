@@ -1,5 +1,8 @@
 import java.io.*;
 
+//
+// LZ Pack
+//
 public class LZpack {
     public static final int BYTE_NUM_BITS = 8;
     public static final int BUFFER_NUM_BITS = 64;
