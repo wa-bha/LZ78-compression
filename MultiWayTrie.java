@@ -111,16 +111,22 @@ public class MultiWayTrie {
     //
     private void moveToFront(MultiWayTrie node) {
         MultiWayTrie parent = node._parent;
-        MultiWayTrie originalFirstChild = parent._firstChild;
-        MultiWayTrie current = originalFirstChild;
-        // Find the left sibling of 'node'
-        while (current._rightSibling != node) {
-            current = current._rightSibling;
+        if (parent != null) {
+            MultiWayTrie current = parent._firstChild;
+            MultiWayTrie previous = current;
+            // Find the left sibling of 'node' and store in 'previous' variable
+            while (current._rightSibling != null) {
+                previous = current;
+                current = current._rightSibling;
+                if (current == node) {
+                    break;
+                }
+            }
+            // Dereference current in Trie without losing anything that comes after current
+            previous._rightSibling = current._rightSibling;
+            // Move current to front on all siblings
+            current._rightSibling = parent._firstChild;
+            parent._firstChild = current;
         }
-        // Set left sibling of 'node' to null
-        current._rightSibling = null;
-        // Now move 'node' to start of all siblings
-        parent._firstChild = node;
-        node._rightSibling = originalFirstChild;
     }
 }
