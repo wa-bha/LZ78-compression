@@ -1,5 +1,8 @@
 import java.io.*;
 
+//
+// LZ encode
+//
 public class LZencode {
     public static void main(String[] args) {
         start();
@@ -8,26 +11,24 @@ public class LZencode {
     public static void start () {
         try {
             BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(System.out));
-
             MultiWayTrie trie = new MultiWayTrie();
 
-            // Read the first byte and store in local variable
             // Use System.in.read instead of wrapping InputSreamReader, to only read one byte at a time.
-            int b = System.in.read();
+            int b = System.in.read(); // Read the first byte and store in local variable
 
-            // While we have no finished reading the inputted file
+            // While we have not finished reading the inputted file
             while (b != -1) {
-                MultiWayTrie current = trie.insert(b);
+                MultiWayTrie current = trie.insert(b); // Populate trie
                 int parentIndex = 0;
                 
-                // While insert does not return null, read the next character and insert it into the trie               
+                // While insert does not return null, read the next character and insert it into the returned trie node
                 while (current != null) {
                     int tmp = System.in.read();
                     if (tmp == -1) {
                         break;
                     }
                     b = tmp;
-                    parentIndex = current.getParentPhraseIndex();
+                    parentIndex = current.getPhraseIndex();
                     current = current.insert(b);
                 }
 
