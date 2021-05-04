@@ -2,11 +2,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 //
-// Multi way trie
+// Multi Way Trie
 //
 public class MultiWayTrie {
     // Private fields
-    private static  List<Integer> trieCounts = new ArrayList<Integer>();
+    private static  List<Integer> trieCounts = new ArrayList<Integer>(); // Should allow multiple MultiWayTrie support
     private int             _trieIndex;
     private MultiWayTrie    _parent;
     private MultiWayTrie    _rightSibling;
@@ -53,29 +53,8 @@ public class MultiWayTrie {
     //
     // Get parentPhraseIndex
     //
-    public int getParentPhraseIndex() {
+    public int getPhraseIndex() {
         return _phraseIndex;
-    }
-
-    //
-    // Get right sibling
-    //
-    public MultiWayTrie getRightSibling() {
-        return _rightSibling;
-    }
-
-    //
-    // Get first child
-    //
-    public MultiWayTrie getFirstChild() {
-        return _firstChild;
-    }
-
-    //
-    // Get parent
-    //
-    public MultiWayTrie getParent() {
-        return _parent;
     }
 
     //
@@ -87,23 +66,25 @@ public class MultiWayTrie {
         
         // Iterate through this node's children
         while (currentChild != null) {
-            // System.err.println("Boom currentChild Value: " + currentChild._mismatchedValue + " toInsert value: " + value);
-            if (currentChild._mismatchedValue == value) { // If value is already in phrase, return node
+
+            // If value is already in phrase, return node
+            if (currentChild._mismatchedValue == value) {
                 moveToFront(currentChild);
                 return currentChild;
             }
+            // Else keep looking
             prevChild = currentChild;
             currentChild = currentChild._rightSibling;
         }
 
-        // Insert value after all other child nodes
+        // Value not yet in this path, so insert value after all other child nodes
         currentChild = new MultiWayTrie(this, value);
         if (_firstChild == null) {
             _firstChild = currentChild;
         } else {
             prevChild._rightSibling = currentChild;
         }
-        // moveToFront(currentChild);
+        moveToFront(currentChild);
         return null; // Returning null indicates value was inserted
     }
 
