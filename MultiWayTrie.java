@@ -87,8 +87,9 @@ public class MultiWayTrie {
         
         // Iterate through this node's children
         while (currentChild != null) {
+            // System.err.println("Boom currentChild Value: " + currentChild._mismatchedValue + " toInsert value: " + value);
             if (currentChild._mismatchedValue == value) { // If value is already in phrase, return node
-                // moveToFront(currentChild);
+                moveToFront(currentChild);
                 return currentChild;
             }
             prevChild = currentChild;
@@ -122,11 +123,15 @@ public class MultiWayTrie {
                     break;
                 }
             }
-            // Dereference current in Trie without losing anything that comes after current
-            previous._rightSibling = current._rightSibling;
+
+            MultiWayTrie after = current._rightSibling;
+
             // Move current to front on all siblings
             current._rightSibling = parent._firstChild;
             parent._firstChild = current;
+
+            // Dereference old current position in Trie without losing anything that comes after current
+            previous._rightSibling = after;
         }
     }
 }
