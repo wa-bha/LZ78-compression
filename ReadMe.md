@@ -20,13 +20,6 @@ cat [COMPRESSED_INPUT_FILENAME] | java LZencode | java LZpack > [OUTPUT_FILENAME
 ```
 
 ```
+Test Case example for full use
 cat CompressedMobyDick.txt | java LZencode | java LZpack > MobyDick.txt
 ```
-
-### Descriptions:
-##### Encoding and Decoding:
-
-Little Description about this
-
-##### Packing and Unpacking:
-
